@@ -1,6 +1,9 @@
 import uuid
 
 from django.db import models
+from django.contrib.auth.models import AbstractUser
+
+from multiselectfield import MultiSelectField
 
 from .choices import NEWS_CATEGORY
 
@@ -19,6 +22,17 @@ class TimeStampedUUID(models.Model):
 
 	class Meta:
 		abstract = True
+
+class UserExtended(AbstractUser, TimeStampedUUID):
+
+	news_choices = MultiSelectField(choices = NEWS_CATEGORY, blank=True)
+
+	def __str__(self):
+		return self.username
+	
+	@property
+	def user_news_choices(self):
+		return self.news_choices
 
 class News(TimeStampedUUID):
 

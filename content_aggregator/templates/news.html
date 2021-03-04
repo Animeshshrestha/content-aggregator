@@ -1,0 +1,133 @@
+{% extends 'base_log.html' %}
+{% load static %}
+{% block stylesheet %}
+<link href="{% static 'css/select2.min.css' %}" rel="stylesheet" />
+{% endblock %}
+{% block content %}
+<nav class="navbar navbar-dark bg-dark">
+    <a class="navbar-brand" href="#">
+      News Content Aggregator
+    </a>
+    <button class="btn btn-outline-success my-2 my-sm-0" data-toggle="modal" data-target="#exampleModal" >My News Topic</button>
+</nav>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">User News Choice</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <form id="form-submit">
+                {{ form.as_p }}
+            </form>
+            
+        </div>
+        <div class="alert alert-success" role="alert" style="display:none">
+           Successfully Saved!!
+        </div>
+        <div class="alert alert-danger" role="alert" style="display:none">
+            Please Select At Least one options
+          </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" id="form-submit-changes">Submit changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<section class="display-15 pt-0 pb-1">
+    <div class="box box-solid">
+      <div class="box-body">
+        <div class="row no-gutters hello" id="cal-link">
+          {% for news  in page_obj %}
+          <div class="col-lg-4 col-md-6 p-2 " id="{{listing.id}}">
+            <div class="listing-card-inviteMasterCleaner card h-100">
+              <div class="dashboard-listing-body">
+                <div class="d-flex justify-content-between listing-card-inviteMasterCleaner_header">
+                  <div class="mb-3">
+                    <a class="heading color-primary" href="{{ news.link}}" target="_blank" >{{ news.title }}</a>
+                    {% if news.description %}
+                    <h6 style="color:black;">{{news.description|truncatechars:50}}</h6>
+                    {% endif %}
+                  </div>
+                  
+                  <div class="mb-3 align-self-center">
+                    <p class="mb-2"><a href="" data-toggle="tooltip" data-placement="bottom" title="Edit Listing"><i class="fas fa-edit mr-1 edit-link py-0"></i></a>
+                    <a onClick="delete_listing({{listing.id}})"><i class="fas fa-trash-alt delete-link" data-toggle="tooltip" data-placement="bottom" title="Delete Listing"></i></a>
+                    <a href="#" data-toggle="tooltip" data-placement="bottom" title="Add Chalkboard"><i class="fas fa-chalkboard edit-link"></i></a>
+                    </p>
+                    <p class="mb-2">
+                      <a href="#"tooltip" data-placement="bottom" title="Edit Points"><i class="fas fa-hand-point-right mr-1 edit-link py-0"></i></a>
+                    </p>
+                  </div>
+                </div> 
+                <hr class="my-0">
+                <section class="cleaner_list">
+                    <img src="{{news.images_link}}" alt="Image" width="500" height="300">
+                </section>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+</section>
+<ul class="pagination pagination-sm">
+    {% if page_obj.has_previous %}
+        <li class="page-item">
+            <a href="?page=1" class="page-link">&laquo; First</a>
+        </li>
+        <li class="page-item">
+            <a href="?page={{ page_obj.previous_page_number }}" class="page-link">Previous</a>
+        </li>
+    {% endif %}
+    {% if page_obj %}
+        <li class="page-item active">
+            <a href="javascript:void(0)" class="page-link">{{ page_obj.number }}</a>
+        </li>
+    {% endif %}
+    {% if page_obj.has_next %}
+        <li class="page-item">
+            <a href="?page={{ page_obj.next_page_number }}" class="page-link">Next</a>
+        </li>
+        <li class="page-item">
+            <a href="?page={{ page_obj.paginator.num_pages }}" class="page-link">Last &raquo;</a>
+        </li>
+    {% endif %}
+</ul>
+{% endblock %}
+{% block scripts %}
+<script>
+    $("#form-submit-changes").on('click', function(){
+        var names = [];
+        $('#id_user_news_choice input:checked').each(function() {
+            names.push(this.value);
+        });
+        if (names.length === 0){
+            $('.alert-danger').show()
+        }
+        else{
+            var form_data = {
+                news_selection:names,
+                csrfmiddlewaretoken: '{{csrf_token }}',
+            }
+            $.ajax({
+                type:"POST",
+                data:form_data,
+                url:'/news-selection/',
+                success:function(result, xhr){
+                    window.location.reload();
+                }
+            })
+        }
+    })
+
+</script>
+{% endblock %}
+  
