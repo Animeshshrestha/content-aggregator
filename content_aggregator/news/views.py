@@ -92,7 +92,7 @@ class NewsViewsSet(viewsets.ModelViewSet):
         user_news = self.user_news_choice(request)
 
         if user_news:
-            news_query = News.objects.filter(user_news)
+            news_query = News.objects.filter(user_news).order_by('?')
         else:
             news_query = self.get_queryset()
         queryset = self.filter_queryset(news_query)
