@@ -6,9 +6,6 @@ This project aims to scraps the news from three different website and saves the 
 - Backend: Python, Django, Scrapy, Postgresql
 - Frontend: HTML, Jquery, CSS
 
-<u>Note: </u>
-- This project provides API End point. We need to run the vue js server in next terminal. 
-
 # Project Installation:
 1. Setup the virtual environment
 2. Clone the github repository into your terminal
