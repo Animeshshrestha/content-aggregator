@@ -11,6 +11,7 @@ from rest_framework.permissions import IsAuthenticated
 
 from .models import News
 from .serializers import UserCreateSerializer, NewsSerializer
+from .pagination import CustomResultsSetPagination
 
 class UserCreate(viewsets.ModelViewSet):
 
